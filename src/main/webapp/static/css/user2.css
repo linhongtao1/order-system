@@ -1,0 +1,13 @@
+.c2{
+    background-color: rgb(255,255,255,0.95);
+    position: fixed;
+    top:40%;
+    left: 50%;
+    z-index: 3;
+}
+.hide{
+    display: none;
+}
+.dishesRow{
+    height: 5rem;
+}

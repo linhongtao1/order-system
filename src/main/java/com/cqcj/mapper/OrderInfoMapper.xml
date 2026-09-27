@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqcj.mapper.OrderInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cqcj.bean.OrderInfo">
+    <!--@mbg.generated-->
+    <!--@Table order_info-->
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="order_begin_date" jdbcType="TIMESTAMP" property="orderBeginDate" />
+    <result column="order_end_date" jdbcType="TIMESTAMP" property="orderEndDate" />
+    <result column="waiter_id" jdbcType="INTEGER" property="waiterId" />
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="table_id" jdbcType="INTEGER" property="tableId" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+  </resultMap>
+
+  <resultMap id="PieResultMap" type="com.cqcj.bean.DataInfo">
+   <result column="order_id" property="orderId" />
+    <result column="user_id" property="userId" />
+    <result column="user_account" property="userAccount" />
+    <result column="waiter_id" jdbcType="INTEGER" property="waiterId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+
+  <resultMap id="OrderInfoMap" type="com.cqcj.bean.OrderInfoAndDishes">
+    <id column="orderId" jdbcType="INTEGER" property="orderId" />
+    <result column="orderBeginDate" property="orderBeginDate" />
+    <result column="orderEndDate" property="orderEndDate" />
+    <result column="waiterId" property="waiterId" />
+    <result column="tableId" property="tableId" />
+    <result column="price" property="price" />
+    <result column="userId" property="userId" />
+    <result column="userName" property="userName" />
+    <result column="dishesId" property="dishesId" />
+    <result column="dishesName" property="dishesName"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    order_id, order_begin_date, order_end_date, waiter_id, order_state, table_id ,price
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from order_info
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from order_info
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="order_id" keyProperty="orderId" parameterType="com.cqcj.bean.OrderInfo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into order_info (order_id,order_begin_date, order_end_date,waiter_id, order_state,table_id,price)
+    values (#{orderId,jdbcType=VARCHAR},#{orderBeginDate,jdbcType=TIMESTAMP}, #{orderEndDate,jdbcType=TIMESTAMP}, #{waiterId,jdbcType=INTEGER}, #{orderState,jdbcType=INTEGER}, #{tableId,jdbcType=INTEGER},#{price,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" keyColumn="order_id" keyProperty="orderId" parameterType="com.cqcj.bean.OrderInfo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into order_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderBeginDate != null">
+        order_begin_date,
+      </if>
+      <if test="orderEndDate != null">
+        order_end_date,
+      </if>
+      <if test="waiterId != null">
+        waiter_id,
+      </if>
+      <if test="orderState != null">
+        order_state,
+      </if>
+      <if test="tableId != null">
+        table_id,
+      </if>
+      <if test="price != null ">
+        price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderBeginDate != null">
+        #{orderBeginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderEndDate != null">
+        #{orderEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="waiterId != null">
+        #{waiterId,jdbcType=INTEGER},
+      </if>
+      <if test="orderState != null">
+        #{orderState,jdbcType=INTEGER},
+      </if>
+      <if test="tableId != null">
+        #{tableId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null ">
+        #{price,jdbcType=DOUBLE}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cqcj.bean.OrderInfo">
+    <!--@mbg.generated-->
+    update order_info
+    <set>
+      <if test="orderBeginDate != null">
+        order_begin_date = #{orderBeginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderEndDate != null">
+        order_end_date = #{orderEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="waiterId != null">
+        waiter_id = #{waiterId,jdbcType=INTEGER},
+      </if>
+      <if test="orderState != null">
+        order_state = #{orderState,jdbcType=INTEGER},
+      </if>
+      <if test="tableId != null">
+        table_id = #{tableId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DOUBLE}
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cqcj.bean.OrderInfo">
+    <!--@mbg.generated-->
+    update order_info
+    set order_begin_date = #{orderBeginDate,jdbcType=TIMESTAMP},
+      order_end_date = #{orderEndDate,jdbcType=TIMESTAMP},
+      waiter_id = #{waiterId,jdbcType=INTEGER},
+      order_state = #{orderState,jdbcType=INTEGER},
+      table_id = #{tableId,jdbcType=INTEGER},
+    price = #{price,jdbcType=DOUBLE}
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </update>
+  <select id="findMonthMoney" resultMap="BaseResultMap">
+    SELECT * FROM order_info WHERE DATE_FORMAT( order_begin_date, '%Y%m' ) = DATE_FORMAT(CURDATE( ), '%Y%m' )
+  </select>
+  <select id="findDayMoney" resultMap="BaseResultMap">
+    select * from order_info where to_days(order_begin_date) = to_days(now());
+  </select>
+  <select id="BarAndLine" resultMap="BaseResultMap">
+    select * from order_info where order_begin_date > DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+  </select>
+  <select id="Pie" resultMap="PieResultMap">
+    select * from user_info inner join order_info on user_info.user_id = order_info.waiter_id WHERE DATE_FORMAT( order_begin_date, '%Y%m' ) = DATE_FORMAT(CURDATE( ), '%Y%m' )
+  </select>
+  <select id="selectAllOrderInfo" resultMap="OrderInfoMap">
+    select oi.order_id as orderId,oi.order_begin_date as orderBeginDate,oi.order_end_date as orderEndDate,oi.waiter_id as waiterId,oi.table_id as tableId,oi.price as price,u.user_id as userId,u.user_name as userName,d.dishes_id as dishesId,d.dishes_name as dishesName from order_info oi inner join order_dishes od on oi.order_id = od.order_reference inner join dishes d on od.dishes=d.dishes_id inner join user_info u on oi.waiter_id = u.user_id
+  </select>
+  <select id="select" resultMap="OrderInfoMap">
+    select oi.order_id as orderId,oi.order_begin_date as orderBeginDate,oi.order_end_date as orderEndDate,oi.waiter_id as waiterId,oi.table_id as tableId,oi.price as price,u.user_id as userId,u.user_name as userName,d.dishes_id as dishesId,d.dishes_name as dishesName from order_info oi inner join order_dishes od on oi.order_id = od.order_reference inner join dishes d on od.dishes=d.dishes_id inner join user_info u on oi.waiter_id = u.user_id
+    <where>
+      <if test="param1 != null">
+        oi.waiter_id like concat('%',#{param1,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="param2 != null">
+        and oi.table_id = #{param2}
+      </if>
+      <if test="param3 != null and param4 != null">
+        and oi.order_begin_date between(#{param3,jdbcType=TIMESTAMP},#{param4,jdbcType=TIMESTAMP})
+      </if>
+      <if test="param3 != null and  param4 == null">
+        and oi.order_begin_date >= #{param3,jdbcType=TIMESTAMP}
+      </if>
+      <if test="param4 != null and param3 == null">
+        and oi.order_end_date &lt;= #{param4,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <select id="selectById" resultMap="OrderInfoMap">
+    select oi.order_id as orderId,oi.order_begin_date as orderBeginDate,oi.order_end_date as orderEndDate,oi.waiter_id as waiterId,oi.table_id as tableId,oi.price as price,u.user_id as userId,u.user_name as userName,d.dishes_id as dishesId,d.dishes_name as dishesName from order_info oi inner join order_dishes od on oi.order_id = od.order_reference inner join dishes d on od.dishes=d.dishes_id inner join user_info u on oi.waiter_id = u.user_id where oi.order_id=#{orderId}
+  </select>
+
+</mapper>

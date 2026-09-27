@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舌尖上的中国</title>
+    <link rel="shortcut icon" href="../../static/img/logo.png">
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <script src="../../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../../static/js/vue.js"></script>
+    <script src="../../static/js/axios.min.js"></script>
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../static/css/dishesManage.css">
+    <link rel="stylesheet" href="../../static/css/orderManage.css">
+</head>
+<body style="background:rgb(247,249,250)">
+<div id="app">
+    <table class="table table-striped table-bordered table-hover">
+        <h3>订单信息表</h3>
+        <a href="#" @click="selectOrderById()" class="btn-lg btn-success" style="position: absolute; left: 1%;top: 3%;">添加订单</a>
+        <div class="queryDiv" style="margin-left: 5rem;font-size: 1.8rem;text-align: center">
+            服务员：
+            <select class="demo1" name="waiter" style="width: 10rem;height: 3rem;margin-right: 1.5rem;"
+                    id="waiterQuery">
+                <option value="" selected>请选择</option>
+                <option v-for="(waiter,index) in waiter" :value="waiter.userId">{{waiter.userName}}</option>
+            </select>
+            餐桌号：
+            <select class="demo1" name="table" style="width: 10rem;height: 3rem;margin-right: 1.5rem;" id="tableQuery">
+                <option value="" selected>请选择</option>
+                <option v-for="(table,index) in table" :value="table">{{table}}</option>
+            </select>
+            开始时间：<input class="demo1" type="date" name="orderBeginDate"
+                        style="width: 13rem;height: 3rem;margin-right: 1.5rem;" id="orderBeginDateQuery"/>
+            结束时间：<input class="demo1" type="date" name="orderEndDate"
+                        style="width: 13rem;height: 3rem;margin-right: 1.5rem;" id="orderEndDateQuery"/>
+            <input type="submit" value="查询" name="querySubmit" class="btn btn-lg btn-success" @click="query()">
+            <input type="reset" value="重置" name="queryReset" class="btn btn-lg btn-primary" @click="reset()">
+        </div>
+
+        <br><br><br>
+        <thead>
+        <tr>
+            <th class="text-center">编号</th>
+            <th class="text-center">菜品</th>
+            <th class="text-center">总价</th>
+            <th class="text-center">服务员</th>
+            <th class="text-center">餐桌号</th>
+            <th class="text-center">时间</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(order,index) in orderAndDishesInfo" class="text-center">
+            <td class="hei"><br>{{index+1}}</td>
+            <td class="hei"><br>{{order.dishesName}}</td>
+            <td class="hei"><br>{{order.price}}</td>
+            <td colspan="hei"><br>{{order.userName}}</td>
+            <td class="hei"><br>{{order.tableId}}</td>
+            <td class="hei"><br>{{order.orderBeginDate}}</td>
+            <td class="hei"><br>
+                <button class="btn btn-sm btn-danger" @click="myconfirm(order.orderId)">删除</button>
+                <button class="btn btn-sm btn-warning" @click="selectOrderById(order.orderId)">修改</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="modal" class="c2 hide" style="border-radius: 2rem;font-size: 2rem;">
+        <h3 style="text-align: center;margin-top: 3rem;" id="title">添加订单</h3><br>
+        <div style="margin-left: 8rem;height: 2rem" class="row" id="dishesRow">
+            菜品：<br>
+            <select name="subtype[]" multiple class="form-control" style="width: 25rem;margin-left: 5rem;text-align: center" id="dishesAdd">
+                <option v-for="(dishes,index) in dishesInfo" :value="dishes.dishesId" @click="addPrice()">{{dishes.dishesName}}</option>
+            </select>
+        </div>
+        <br><br><br>
+        <div class="row" style="margin-left: 8rem;margin-top: 4rem;" id="tableDiv">
+            餐桌号：
+            <select id="tableAdd" name="table" class="form-control"
+                    style="width: 12rem;text-align: center;margin-left: 8rem;">
+                <option value="" selected>请选择</option>
+                <option v-for="(table,index) in table" :value="table">{{table}}</option>
+            </select>
+        </div>
+        <br>
+        <div class="row" style="margin-left: 8rem;" id="waiterDiv">
+            服务员：
+            <select id="waiterAdd" name="waiter" class="form-control" style="width: 12rem;text-align: center;margin-left: 8rem;">
+                <option value="" selected>请选择</option>
+                <option v-for="(waiter,index) in waiter" :value="waiter.userId">{{waiter.userName}}</option>
+            </select>
+        </div>
+        <div class="row" style="margin-left: 0rem;margin-top: 5rem;" id="priceAdd">
+            <p >总计：<input type="text" :value="shoppingCart.totalPrice" id="totalPrice"></p>
+        </div>
+        <p style="margin-top: 2rem;margin-left: 15rem;" id="btnDiv">
+            <input type="button" class="btn btn-lg btn-success" style="width: 10rem" value="确定" @click="saveOrUpdate();">
+            <input type="button" class="btn btn-lg" style="width: 10rem" value="取消" @click="hide();">
+        </p>
+    </div>
+</div>
+<script>
+
+</script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                dishesInfo: [],
+                waiter: [],
+                orderInfo: [],
+                orderId:'',
+                table: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                orderAndDishesInfo: [],
+                queryInfo: {
+                    waiterId: 0,
+                    tableId: 0,
+                    orderBeginDate: "",
+                    orderEndDate: ""
+                },
+                shoppingCart: {
+                    orderId:'',
+                    cart: [],
+                    tableId: 0,
+                    waiterId: 0,
+                    totalPrice: 0,
+                    totalNum: 0,
+                },
+            }
+        },
+        created() {
+            this.getAllWaiter()
+            this.loadOrderInfo()
+            this.loadAllDishes()
+        },
+        methods: {
+            addPrice(){
+                app.shoppingCart.totalPrice = 0
+                let o = document.getElementById("dishesAdd")
+                for (let i = 0; i < o.length; i++) {
+                    if(o.options[i].selected){
+                        for (let j = 0; j < app.dishesInfo.length; j++) {
+                            if(o.options[i].value == app.dishesInfo[j].dishesId){
+                                app.shoppingCart.totalPrice += app.dishesInfo[j].dishesPrice
+                            }
+                        }
+                    }
+                }
+            },
+            addOrder(){
+                app.shoppingCart.tableId = document.getElementById("tableAdd").value
+                app.shoppingCart.waiterId = document.getElementById("waiterAdd").value
+                let o = document.getElementById("dishesAdd")
+                let demo = []
+                for (let i = 0; i < o.length; i++) {
+                    if(o.options[i].selected){
+                        demo.push({"dishesId":o.options[i].value})
+                    }
+                }
+                app.shoppingCart.cart = demo
+                axios({
+                    method: "post",
+                    url: "/OrderInfo",
+                    data: app.shoppingCart
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                    app.hide()
+                    app.shoppingCart = {
+                        cart: [],
+                        tableId: 0,
+                        waiterId: 0,
+                        totalPrice: 0,
+                        totalNum: 0,
+                    }
+                })
+            },
+            updateOrderById(){
+                app.shoppingCart.tableId = document.getElementById("tableAdd").value
+                app.shoppingCart.waiterId = document.getElementById("waiterAdd").value
+                let o = document.getElementById("dishesAdd")
+                let demo = []
+                for (let i = 0; i < o.length; i++) {
+                    if(o.options[i].selected){
+                        demo.push({"dishesId":o.options[i].value})
+                    }
+                }
+                app.shoppingCart.cart = demo
+                console.log(app.shoppingCart)
+                app.hide()
+                axios({
+                    method: 'put',
+                    url: '/OrderInfo',
+                    data: app.shoppingCart,
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                    app.orderId = ''
+                });
+            },
+            saveOrUpdate() {
+                if (!app.orderId) { //空
+                    app.addOrder()
+                } else {
+                    app.updateOrderById()
+                }
+            },
+            selectOrderById(id) {
+                if (id) { //更新
+                    document.getElementById("title").innerHTML = "修改订单信息"
+                    app.shoppingCart.orderId = id
+                    app.orderId = id;
+                    axios({
+                        method: 'post',
+                        url: '/OrderInfo/' + id
+                    }).then(function (res) {
+                        let dishesIdList = res.data.result.dishesIdList
+                        let box = document.getElementById("dishesAdd")
+                        for (let i = 0; i < box.length; i++) {
+                            box[i].selected = false
+                        }
+                        for (let i = 0; i < box.length; i++) {
+                            for (let j = 0; j < dishesIdList.length; j++) {
+                                if(box[i].value == dishesIdList[j]){
+                                    box[i].selected = true
+                                }
+                            }
+                        }
+                        app.shoppingCart.totalPrice = 0
+                        let o = document.getElementById("dishesAdd")
+                        for (let i = 0; i < o.length; i++) {
+                            if(o.options[i].selected){
+                                for (let j = 0; j < app.dishesInfo.length; j++) {
+                                    if(o.options[i].value == app.dishesInfo[j].dishesId){
+                                        app.shoppingCart.totalPrice += app.dishesInfo[j].dishesPrice
+                                    }
+                                }
+                            }
+                        }
+                        document.getElementById("tableAdd").value = res.data.result.tableId;
+                        document.getElementById("waiterAdd").value = res.data.result.waiterId;
+                        document.getElementById("priceAdd").value = res.data.result.price
+                        document.getElementById('modal').classList.remove('hide');
+                    });
+                } else {
+                    document.getElementById("title").innerHTML = "增添订单"
+                    document.getElementById("dishesAdd").value = ""
+                    document.getElementById("tableAdd").value = ""
+                    document.getElementById("waiterAdd").value = ""
+                    document.getElementById("priceAdd").value = ""
+                    app.shoppingCart.totalPrice = 0
+                    app.addPrice()
+                    document.getElementById('modal').classList.remove('hide');
+                }
+            },
+            loadAllDishes() {
+                axios({
+                    method: 'get',
+                    url: '/Dishes'
+                }).then(function (res) {
+                    app.dishesInfo = res.data.dishesList
+                })
+            },
+            deleteById(id) {
+                axios({
+                    method: 'delete',
+                    url: '/OrderInfo/' + id
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                })
+            },
+            myconfirm(id) {
+                if (confirm('确定要删除该菜品吗？') == true) {
+                    this.deleteById(id)
+                }
+            },
+            reset() {
+                document.getElementById("waiterQuery").value = ""
+                document.getElementById("tableQuery").value = ""
+                document.getElementById("orderBeginDateQuery").value = ""
+                document.getElementById("orderEndDateQuery").value = ""
+            },
+            query() {
+                app.queryInfo.waiterId = document.getElementById("waiterQuery").value
+                app.queryInfo.tableId = document.getElementById("tableQuery").value
+                app.queryInfo.orderBeginDate = document.getElementById("orderBeginDateQuery").value
+                app.queryInfo.orderEndDate = document.getElementById("orderEndDateQuery").value
+                axios({
+                    method: 'post',
+                    url: '/OrderInfo/query',
+                    data: app.queryInfo
+                }).then(function (res) {
+                    app.orderAndDishesInfo = res.data.orderInfoAndDishesList
+                })
+            },
+            loadOrderInfo() {
+                axios({
+                    method: 'get',
+                    url: '/OrderInfo',
+                }).then(function (res) {
+                    app.orderAndDishesInfo = res.data.orderInfoAndDishesList
+                })
+            },
+            getAllWaiter() {
+                axios({
+                    method: "get",
+                    url: "/userInfo/GetAllWaiter"
+                }).then(function (res) {
+                    app.waiter = res.data.waiterList
+                })
+            },
+            hide() {
+                document.getElementById('modal').classList.add('hide');
+            }
+        }
+    });
+</script>
+</body>
+</html>

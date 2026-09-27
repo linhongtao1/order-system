@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqcj.mapper.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cqcj.bean.UserInfo">
+    <!--@mbg.generated-->
+    <!--@Table user_info-->
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_account" jdbcType="VARCHAR" property="userAccount" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="face_img" jdbcType="VARCHAR" property="faceImg" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    user_id, user_account, user_password, 'role', face_img,user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from user_info
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.cqcj.bean.UserInfo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into user_info (user_account, user_password, `role`, face_img,user_name)
+    values (#{userAccount,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{role,jdbcType=INTEGER},
+      #{faceImg,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="com.cqcj.bean.UserInfo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userAccount != null">
+        user_account,
+      </if>
+      <if test="userPassword != null">
+        user_password,
+      </if>
+      <if test="role != null">
+        `role`,
+      </if>
+      <if test="faceImg != null">
+        face_img,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=INTEGER},
+      </if>
+      <if test="faceImg != null">
+        #{faceImg,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cqcj.bean.UserInfo">
+    <!--@mbg.generated-->
+    update user_info
+    <set>
+      <if test="userAccount != null">
+        user_account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        `role` = #{role,jdbcType=INTEGER},
+      </if>
+      <if test="faceImg != null">
+        face_img = #{faceImg,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cqcj.bean.UserInfo">
+    <!--@mbg.generated-->
+    update user_info
+    set user_account = #{userAccount,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      `role` = #{role,jdbcType=INTEGER},
+      face_img = #{faceImg,jdbcType=VARCHAR},
+    user_name = #{userName,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+    <select id="selectByUserAccountAndUserPassword" resultMap="BaseResultMap">
+      select * from user_info where user_account=#{param1} and user_password=#{param2}
+    </select>
+    <select id="findAll" resultMap="BaseResultMap">
+      select  * from user_info
+    </select>
+  <select id="findUser" resultMap="BaseResultMap">
+    select * from user_info
+    <where>
+      <if test="param1 != null and param1 != ''">
+        user_account like concat('%',#{param1,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="param2 != null">
+        and role = #{param2}
+      </if>
+      <if test="param3 != null and param3 != ''">
+        and user_name like concat('%',#{param3,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
+  </select>
+    <select id="GetAllWaiter" resultMap="BaseResultMap">
+      select * from user_info where role=2
+    </select>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select * from user_info where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

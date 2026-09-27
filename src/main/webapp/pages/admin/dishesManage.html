@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>舌尖上的中国</title>
+    <link rel="shortcut icon" href="../../static/img/logo.png">
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <script src="../../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../../static/js/vue.js"></script>
+    <script src="../../static/js/axios.min.js"></script>
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../static/css/dishesManage.css">
+    <style>
+        #dishesDescript {
+            white-space: pre-wrap;
+            width: 38rem;
+        }
+
+        .hei {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body style="background:rgb(247,249,250)">
+<div id="app">
+    <table class="table table-striped table-bordered table-hover">
+        <h3>菜品信息表</h3>
+        <a href="#" @click="selectDishesById()" class="btn-lg btn-success"
+           style="position: absolute; left: 1%;top: 3%;">添加菜品</a>
+        <div class="row" style="float: left; margin-left: 30rem;font-size:2rem">
+            菜品名：<input id="queryDishesName" type="text" name="queryDishesName" class="form-control"
+                       style="width: 20rem;text-align: center;display: inline-block;margin-right: 4rem;">
+            是否推荐菜：
+            <select name="queryRecommend" id="queryRecommend" class="form-control"
+                    style="width: 15rem;text-align: center;display: inline-block;margin-right: 4rem;">
+                <option value="">请选择</option>
+                <option value="1">是</option>
+                <option value="0">否</option>
+            </select>
+            <input type="submit" value="查询" name="querySubmit" class="btn btn-lg btn-success"
+                   style="margin-right: 2rem;" @click="query()">
+            <input type="reset" value="重置" name="queryReset" class="btn btn-lg btn-primary" @click="reset()">
+        </div>
+        <br><br><br>
+        <thead>
+        <tr>
+            <th class="text-center">编号</th>
+            <th class="text-center">菜品名</th>
+            <th class="text-center">价格</th>
+            <th class="text-center">推荐菜</th>
+            <th class="text-center">菜品简述</th>
+            <th class="text-center">菜品详述</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(dishes,index) in list" class="text-center">
+            <td class="hei"><br>{{index+1}}</td>
+            <td class="hei"><br>{{dishes.dishesName}}</td>
+            <td class="hei"><br>{{dishes.dishesPrice}}</td>
+            <td v-if="dishes.recommend == '1'" class="hei"><img src="../../static/img/recommend.png" alt="推荐菜品"
+                                                                width="38rem" style="margin-top: 1rem;"></td>
+            <td v-else class="hei"></td>
+            <td class="hei"><br>{{dishes.dishesTxt}}</td>
+            <td id="dishesDescript" class="hei">{{dishes.dishesDescript}}</td>
+            <td class="hei"><br>
+                <button class="btn btn-sm btn-danger" @click="myconfirm(dishes.dishesId)">删除</button>
+                <button class="btn btn-sm btn-warning" @click="selectDishesById(dishes.dishesId)">修改</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="modal" class="c2 hide" style="border-radius: 2rem">
+        <h3 style="text-align: center;margin-top: 3rem;" id="title"></h3><br>
+        <div id="updateOrAdd" style="margin-left: 12rem;">
+            <input type="text" id="dishesId" name="dishesId" class="hide"/>
+            <label for="dishesName" class="control-label">菜品名</label><input type="text" id="dishesName"
+                                                                            name="dishesName" class="form-control"
+                                                                            style="width: 25rem;"/><br>
+            <label for="dishesPrice" class="control-label">价格</label><input type="text" id="dishesPrice"
+                                                                            name="dishesPrice" class="form-control"
+                                                                            style="width: 25rem;"/>
+            <br><label for="recommend" class="control-label">推荐菜</label>
+            <select id="recommend" name="recommend" v-model="dishesInfo.recommend" class="form-control"
+                    style="width: 10rem;text-align: center">
+                <option value="1">是</option>
+                <option value="0">否</option>
+            </select><br>
+            <label for="dishesTxt" class="control-label">菜品简述</label>
+            <input type="text" id="dishesTxt" name="dishesTxt" class="form-control" style="width: 25rem;"><br>
+            <label for="dishesDescript2" class="control-label">菜品详述</label>
+            <textarea name="dishesDescript2" id="dishesDescript2" cols="40" rows="5" class="form-control"
+                      style="width: 35rem;margin-left: -2rem;"></textarea><br>
+            <form class="layui-form " action="/Dishes/upload" enctype="multipart/form-data" method="post" id="fileForm"
+                  target="nm_iframe">
+                <input type="file" value="上传文件" class="input-lg" name="photo" @change="uoload()" id="photo"/>
+                <input type="submit" id="fileSub" style="display: none">
+            </form>
+
+        </div>
+        <br>
+        <p style="margin-left: 20rem;">
+            <input type="button" class="btn btn-sm btn-success" value="确定" @click="saveOrUpdate();">
+            <input type="button" class="btn btn-sm" value="取消" @click="hide();">
+        </p>
+        <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+    </div>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                list: [],
+                dishesInfo: {
+                    dishesId: "",
+                    dishesName: "",
+                    dishesDescript: "",
+                    dishesTxt: "",
+                    recommend: "",
+                    dishesPrice: "",
+                    dishesImg: "",
+                },
+                queryInfo: {
+                    dishesId: "",
+                    dishesName: "",
+                    dishesDescript: "",
+                    dishesTxt: "",
+                    recommend: "",
+                    dishesPrice: "",
+                    dishesImg: "",
+                    dishesCount:'',
+                    dishesDatetime:'',
+                    dishesOperTime:'',
+                }
+            }
+        },
+        created() {
+            this.loadDishesInfo()
+        },
+        methods: {
+            reset(){
+                document.getElementById("queryDishesName").value = ""
+                document.getElementById("queryRecommend").value = ""
+            },
+            query(){
+                app.queryInfo.dishesName = document.getElementById("queryDishesName").value
+                app.queryInfo.recommend = document.getElementById("queryRecommend").value
+                axios({
+                    method: 'post',
+                    url: '/Dishes/find',
+                    data:app.queryInfo
+                }).then(function (res){
+                    app.list = res.data.dishesList
+                })
+            },
+            uoload() {
+                document.getElementById("fileForm").submit()
+            },
+            saveOrUpdate() {
+                if (!app.dishesInfo.dishesId) { //空
+                    app.addDishes()
+                } else {
+                    app.updateById()
+                }
+            },
+            addDishes() {
+                app.dishesInfo.dishesName = document.getElementById("dishesName").value
+                app.dishesInfo.dishesDescript = document.getElementById("dishesDescript2").value
+                app.dishesInfo.dishesTxt = document.getElementById("dishesTxt").value
+                app.dishesInfo.recommend = document.getElementById("recommend").value
+                app.dishesInfo.dishesPrice = document.getElementById("dishesPrice").value
+                axios({
+                    method: 'post',
+                    url: '/Dishes',
+                    data: app.dishesInfo
+                }).then(function (res) {
+                    app.loadDishesInfo()
+                    app.hide()
+                })
+            },
+            myconfirm(id) {
+                if (confirm('确定要删除该菜品吗？') == true) {
+                    this.deleteById(id)
+                }
+            },
+            loadDishesInfo() {
+                axios({
+                    method: 'get',
+                    url: '/Dishes'
+                }).then(function (res) {
+                    app.list = res.data.dishesList
+                })
+            },
+            deleteById(id) {
+                axios({
+                    method: 'delete',
+                    url: '/Dishes/' + id
+                }).then(function (res) {
+                    app.loadDishesInfo()
+                });
+            },
+            updateById() {
+                app.dishesInfo.dishesId = document.getElementById("dishesId").value
+                app.dishesInfo.dishesName = document.getElementById("dishesName").value
+                app.dishesInfo.dishesDescript = document.getElementById("dishesDescript2").value
+                app.dishesInfo.dishesTxt = document.getElementById("dishesTxt").value
+                app.dishesInfo.recommend = document.getElementById("recommend").value
+                app.dishesInfo.dishesPrice = document.getElementById("dishesPrice").value
+                console.log(app.dishesInfo)
+                app.hide()
+                axios({
+                    method: 'put',
+                    url: '/Dishes',
+                    data: app.dishesInfo,
+                }).then(function (res) {
+                    app.loadDishesInfo()
+                });
+            },
+            selectDishesById(id) {
+                if (id) {
+                    document.getElementById("title").innerHTML = "修改菜品信息"
+                    axios({
+                        method: 'get',
+                        url: '/Dishes/' + id
+                    }).then(function (res) {
+                        app.dishesInfo = res.data.dishes
+                        document.getElementById("dishesId").value = app.dishesInfo.dishesId
+                        document.getElementById("dishesName").value = app.dishesInfo.dishesName
+                        document.getElementById("dishesDescript2").value = app.dishesInfo.dishesDescript
+                        document.getElementById("dishesTxt").value = app.dishesInfo.dishesTxt
+                        document.getElementById("recommend").value = app.dishesInfo.recommend
+                        document.getElementById("dishesPrice").value = app.dishesInfo.dishesPrice
+                        document.getElementById('modal').classList.remove('hide')
+                    });
+                } else {
+                    document.getElementById("title").innerHTML = "添加新菜品"
+                    document.getElementById("dishesId").value = ""
+                    document.getElementById("dishesName").value = ""
+                    document.getElementById("dishesDescript2").value = ""
+                    document.getElementById("dishesTxt").value = ""
+                    document.getElementById("recommend").value = ""
+                    document.getElementById("dishesPrice").value = ""
+                    document.getElementById("photo").value = ""
+                    document.getElementById('modal').classList.remove('hide')
+                }
+            },
+            hide() {
+                document.getElementById('modal').classList.add('hide');
+            }
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,482 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>舌尖上的中国</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../../static/img/logo.png">
+    <!-- all css here -->
+    <link rel="stylesheet" href="../../static/plugins/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/chosen.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/ionicons.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/meanmenu.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/bundle.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/responsive.css">
+    <script src="../../static/plugins/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="../../static/js/axios.min.js"></script>
+</head>
+<body>
+
+
+<!-- Add your site or application content here -->
+
+<!--organicfood wrapper start-->
+<div class="organic_food_wrapper">
+    <!--Header start-->
+    <header class="header sticky-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="header_wrapper_inner">
+                        <div class="logo col-xs-12">
+                            <a href="user.html">
+                                <img src="../../static/img/logo.png" alt="" style="width: 3rem;">
+                                <label style="color: red;font-family: 华文行楷">舌尖上的中国</label>
+                            </a>
+                        </div>
+
+                        <div class="main_menu_inner">
+                            <div class="menu">
+                                <nav>
+                                    <ul>
+                                        <li><a href="waiter.html">主页</a></li>
+                                        <li><a href="about.html">关于我们</a></li>
+                                        <li><a href="order.html">订单管理</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="header_right_info d-flex">
+                            <div class="header_account">
+                                <div class="account_inner">
+                                    <a href="#"><i class="ion-gear-b"></i></a>
+                                </div>
+                                <div class="content-setting-dropdown">
+                                    <div class="language-selector-wrapper">
+                                        <div class="language-selector">
+                                            <ul>
+                                                <li><a href="#"><img src="../../static/plugins/assets/img/1.jpg"
+                                                                     alt="English"><span
+                                                        class="expand-more">English</span></a></li>
+                                                <li><a href="#"><img
+                                                        src="../../static/plugins/assets/img/banner/frances2.jpg"
+                                                        alt="Language"><span class="expand-more">Français</span>
+                                                </a></li>
+
+                                            </ul>
+                                        </div>
+                                        <div class="currency-selector-wrapper">
+                                            <ul>
+                                                <li><a href="#">EUR $</a></li>
+                                                <li><a href="#">USD $</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="user_info_top">
+                                            <ul>
+                                                <li><a href="my-account.html">my account</a></li>
+                                                <li><a href="checkout.html">Checkout</a></li>
+                                                <li><a href="login.html">Sign in</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--Header end-->
+</div>
+<!--organicfood wrapper end-->
+
+<div class="breadcrumb_container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="waiter.html">主页 ></a>
+                        </li>
+                        <li>订单管理</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumb area end-->
+
+
+<div id="app">
+    <h3 style="margin-left: 50%;">订单信息表</h3><br>
+    <a href="#" @click="selectOrderById()" class="btn-lg btn-success"
+       style="position: absolute; left: 1%;top: 30%;">添加订单</a>
+    <div class="queryDiv" style="margin-left: 3rem;font-size: 1.2rem;text-align: center;margin-top: 5rem;">
+        服务员：
+        <select class="demo1" name="waiter" style="width: 10rem;height: 3rem;margin-right: 1.5rem;"
+                id="waiterQuery">
+            <option value="" selected>请选择</option>
+            <option v-for="(waiter,index) in waiter" :value="waiter.userId">{{waiter.userName}}</option>
+        </select>
+        餐桌号：
+        <select class="demo1" name="table" style="width: 10rem;height: 3rem;margin-right: 1.5rem;" id="tableQuery">
+            <option value="" selected>请选择</option>
+            <option v-for="(table,index) in table" :value="table">{{table}}</option>
+        </select>
+        开始时间：<input class="demo1" type="date" name="orderBeginDate"
+                    style="width: 13rem;height: 3rem;margin-right: 1.5rem;" id="orderBeginDateQuery"/>
+        结束时间：<input class="demo1" type="date" name="orderEndDate"
+                    style="width: 13rem;height: 3rem;margin-right: 1.5rem;" id="orderEndDateQuery"/>
+        <input type="submit" value="查询" name="querySubmit" class="btn btn-lg btn-success" @click="query()" style="width: 5rem">
+        <input type="reset" value="重置" name="queryReset" class="btn btn-lg btn-primary" @click="reset()"  style="width: 5rem">
+    </div>
+
+    <div id="modal" class="c2 hide" style="border-radius: 2rem;font-size: 1.2rem;">
+        <h3 style="text-align: center;margin-top: 3rem;" id="title">添加订单</h3><br>
+        <div style="margin-left: 5rem;height: 2rem" class="row" id="dishesRow">
+            菜品：<br>
+            <select name="subtype[]" multiple class="form-control"
+                    style="width: 15rem;margin-left: 3rem;text-align: center;height: 6rem" id="dishesAdd">
+                <option v-for="(dishes,index) in dishesInfo" :value="dishes.dishesId" @click="addPrice()">
+                    {{dishes.dishesName}}
+                </option>
+            </select>
+        </div>
+        <br><br><br>
+        <div class="row" style="margin-left: 5rem;margin-top: -1rem;" id="tableDiv">
+            餐桌号：
+            <select id="tableAdd" name="table" class="form-control"
+                    style="width: 12rem;text-align: center;margin-left: 2rem;">
+                <option value="" selected>请选择</option>
+                <option v-for="(table,index) in table" :value="table">{{table}}</option>
+            </select>
+        </div>
+        <br>
+        <div class="row" style="margin-left: 5rem;margin-top: 1rem;" id="waiterDiv">
+            服务员：
+            <select id="waiterAdd" name="waiter" class="form-control"
+                    style="width: 5rem;text-align: center;margin-left: 2rem;height: 3rem">
+                <option value="" selected>请选择</option>
+                <option v-for="(waiter,index) in waiter" :value="waiter.userId">{{waiter.userName}}</option>
+            </select>
+        </div>
+        <div class="row" style="margin-left: 5rem;margin-top: 1rem;font-size: 1.5rem" id="priceAdd">
+            总计：<input type="text" :value="shoppingCart.totalPrice" id="totalPrice"
+                      style="width: 10rem;margin-left: 2rem;">
+        </div>
+        <p style="margin-top: 2rem;margin-left: 15rem;" id="btnDiv">
+            <input type="button" class="btn btn-lg btn-success" style="width: 10rem" value="确定"
+                   @click="saveOrUpdate();">
+            <input type="button" class="btn btn-lg" style="width: 10rem" value="取消" @click="hide();">
+        </p>
+    </div>
+    <div class="table-content table-responsive" style="margin-top: 5rem;margin-left: 0.5rem;">
+        <table>
+            <thead>
+            <tr>
+                <th class="img-thumbnail">编号</th>
+                <th class="product-name">菜品</th>
+                <th class="product-price">总价</th>
+                <th class="product-quantity">服务员</th>
+                <th class="product-subtotal">餐桌号</th>
+                <th class="product-remove">时间</th>
+                <th class="product-price">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(order,index) in orderAndDishesInfo" class="text-center" style="font-size: 1rem">
+                <td class="hei"><br>{{index+1}}</td>
+                <td class="hei"><br>{{order.dishesName}}</td>
+                <td class="hei"><br>{{order.price}}</td>
+                <td colspan="hei"><br>{{order.userName}}</td>
+                <td class="hei"><br>{{order.tableId}}</td>
+                <td class="hei"><br>{{order.orderBeginDate}}</td>
+                <td class="hei"><br>
+                    <button class="btn btn-sm btn-danger" @click="myconfirm(order.orderId)">删除</button>
+                    <button class="btn btn-sm btn-warning" @click="selectOrderById(order.orderId)">修改</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- about area end -->
+
+
+<!--about team area start-->
+<div class="about_team_area ptb-90">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="about_section_title">
+                    <h2>我们的经营理念</h2>
+                    <p>
+                        对于一个餐饮品牌来说，学会了创新两个字，在什么时代都是可以发展得非常不错。创新生活则是一点点的核心价值观，懂得创新才能让这个品牌走得更远，创造新生活品质则是一点点的经营宗旨；经营二字虽然是对于一点点奶茶店铺的，但是其核心还是消费者，想要消费者能够有优质的生活品质。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--about team area end-->
+
+
+<div class="organic_food_wrapper">
+
+    <footer id="footer">
+        <br>
+        <div class="sub-logo">
+            <a href="waiter.html">
+                <img src="../../static/img/logo2.png" alt="" style="width: 4rem;">
+                <label style="color: gray;font-family: 华文行楷">舌尖上的中国</label>
+            </a>
+            <hr style="width:100%;margin-right: -1rem;margin-top: 1rem;"/>
+        </div>
+
+        <div class="inscribe">
+            <p class="company">
+                <a href="javascript:;">舌尖上的中国（北京）有限公司</a>
+                <a target="_blank" href="https://beian.miit.gov.cn" rel="noopener noreferrer">京ICP备12345678号</a>
+                <a target="_blank"
+                   href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502047867"><img
+                        style="vertical-align: bottom;margin-right:5px;margin-left: 15px;"
+                        src="https://www.lkcoffee.com/template/images/common/icp.png">京公网安备123456789101112号</a>
+            </p>
+            <p></p>
+            <p class="version" style="font-size: 12px;">
+                电话：000_123456789 地址：重庆市巴南区龙洲湾尚文大道906号
+                <br> Copyright©2018 localhost:8080
+            </p>
+        </div>
+    </footer>
+    <!-- footer end -->
+</div>
+<!--organicfood wrapper end-->
+
+<link rel="stylesheet" href="../../static/css/order.css">
+<script src="../../static/js/vue.js"></script>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                dishesInfo: [],
+                waiter: [],
+                orderInfo: [],
+                orderId: '',
+                table: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                orderAndDishesInfo: [],
+                queryInfo: {
+                    waiterId: 0,
+                    tableId: 0,
+                    orderBeginDate: "",
+                    orderEndDate: ""
+                },
+                shoppingCart: {
+                    orderId: '',
+                    cart: [],
+                    tableId: 0,
+                    waiterId: 0,
+                    totalPrice: 0,
+                    totalNum: 0,
+                },
+            }
+        },
+        created() {
+            this.getAllWaiter()
+            this.loadOrderInfo()
+            this.loadAllDishes()
+        },
+        methods: {
+            addPrice() {
+                app.shoppingCart.totalPrice = 0
+                let o = document.getElementById("dishesAdd")
+                for (let i = 0; i < o.length; i++) {
+                    if (o.options[i].selected) {
+                        for (let j = 0; j < app.dishesInfo.length; j++) {
+                            if (o.options[i].value == app.dishesInfo[j].dishesId) {
+                                app.shoppingCart.totalPrice += app.dishesInfo[j].dishesPrice
+                            }
+                        }
+                    }
+                }
+            },
+            addOrder() {
+                app.shoppingCart.tableId = document.getElementById("tableAdd").value
+                app.shoppingCart.waiterId = document.getElementById("waiterAdd").value
+                let o = document.getElementById("dishesAdd")
+                let demo = []
+                for (let i = 0; i < o.length; i++) {
+                    if (o.options[i].selected) {
+                        demo.push({"dishesId": o.options[i].value})
+                    }
+                }
+                app.shoppingCart.cart = demo
+                axios({
+                    method: "post",
+                    url: "/OrderInfo",
+                    data: app.shoppingCart
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                    app.hide()
+                    app.shoppingCart = {
+                        cart: [],
+                        tableId: 0,
+                        waiterId: 0,
+                        totalPrice: 0,
+                        totalNum: 0,
+                    }
+                })
+            },
+            updateOrderById() {
+                app.shoppingCart.tableId = document.getElementById("tableAdd").value
+                app.shoppingCart.waiterId = document.getElementById("waiterAdd").value
+                let o = document.getElementById("dishesAdd")
+                let demo = []
+                for (let i = 0; i < o.length; i++) {
+                    if (o.options[i].selected) {
+                        demo.push({"dishesId": o.options[i].value})
+                    }
+                }
+                app.shoppingCart.cart = demo
+                console.log(app.shoppingCart)
+                app.hide()
+                axios({
+                    method: 'put',
+                    url: '/OrderInfo',
+                    data: app.shoppingCart,
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                    app.orderId = ''
+                });
+            },
+            saveOrUpdate() {
+                if (!app.orderId) { //空
+                    app.addOrder()
+                } else {
+                    app.updateOrderById()
+                }
+            },
+            selectOrderById(id) {
+                if (id) { //更新
+                    document.getElementById("title").innerHTML = "修改订单信息"
+                    app.shoppingCart.orderId = id
+                    app.orderId = id;
+                    axios({
+                        method: 'post',
+                        url: '/OrderInfo/' + id
+                    }).then(function (res) {
+                        let dishesIdList = res.data.result.dishesIdList
+                        let box = document.getElementById("dishesAdd")
+                        for (let i = 0; i < box.length; i++) {
+                            box[i].selected = false
+                        }
+                        for (let i = 0; i < box.length; i++) {
+                            for (let j = 0; j < dishesIdList.length; j++) {
+                                if (box[i].value == dishesIdList[j]) {
+                                    box[i].selected = true
+                                }
+                            }
+                        }
+                        app.shoppingCart.totalPrice = 0
+                        let o = document.getElementById("dishesAdd")
+                        for (let i = 0; i < o.length; i++) {
+                            if (o.options[i].selected) {
+                                for (let j = 0; j < app.dishesInfo.length; j++) {
+                                    if (o.options[i].value == app.dishesInfo[j].dishesId) {
+                                        app.shoppingCart.totalPrice += app.dishesInfo[j].dishesPrice
+                                    }
+                                }
+                            }
+                        }
+                        document.getElementById("tableAdd").value = res.data.result.tableId;
+                        document.getElementById("waiterAdd").value = res.data.result.waiterId;
+                        document.getElementById("priceAdd").value = res.data.result.price
+                        document.getElementById('modal').classList.remove('hide');
+                    });
+                } else {
+                    document.getElementById("title").innerHTML = "增添订单"
+                    document.getElementById("dishesAdd").value = ""
+                    document.getElementById("tableAdd").value = ""
+                    document.getElementById("waiterAdd").value = ""
+                    document.getElementById("priceAdd").value = ""
+                    app.shoppingCart.totalPrice = 0
+                    app.addPrice()
+                    document.getElementById('modal').classList.remove('hide');
+                }
+            },
+            loadAllDishes() {
+                axios({
+                    method: 'get',
+                    url: '/Dishes'
+                }).then(function (res) {
+                    app.dishesInfo = res.data.dishesList
+                })
+            },
+            deleteById(id) {
+                axios({
+                    method: 'delete',
+                    url: '/OrderInfo/' + id
+                }).then(function (res) {
+                    app.loadOrderInfo()
+                })
+            },
+            myconfirm(id) {
+                if (confirm('确定要删除该菜品吗？') == true) {
+                    this.deleteById(id)
+                }
+            },
+            reset() {
+                document.getElementById("waiterQuery").value = ""
+                document.getElementById("tableQuery").value = ""
+                document.getElementById("orderBeginDateQuery").value = ""
+                document.getElementById("orderEndDateQuery").value = ""
+            },
+            query() {
+                app.queryInfo.waiterId = document.getElementById("waiterQuery").value
+                app.queryInfo.tableId = document.getElementById("tableQuery").value
+                app.queryInfo.orderBeginDate = document.getElementById("orderBeginDateQuery").value
+                app.queryInfo.orderEndDate = document.getElementById("orderEndDateQuery").value
+                axios({
+                    method: 'post',
+                    url: '/OrderInfo/query',
+                    data: app.queryInfo
+                }).then(function (res) {
+                    app.orderAndDishesInfo = res.data.orderInfoAndDishesList
+                })
+            },
+            loadOrderInfo() {
+                axios({
+                    method: 'get',
+                    url: '/OrderInfo',
+                }).then(function (res) {
+                    app.orderAndDishesInfo = res.data.orderInfoAndDishesList
+                })
+            },
+            getAllWaiter() {
+                axios({
+                    method: "get",
+                    url: "/userInfo/GetAllWaiter"
+                }).then(function (res) {
+                    app.waiter = res.data.waiterList
+                })
+            },
+            hide() {
+                document.getElementById('modal').classList.add('hide');
+            }
+        }
+    });
+</script>
+</html>

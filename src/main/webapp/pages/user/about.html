@@ -1,0 +1,379 @@
+﻿<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>舌尖上的中国</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../../static/img/logo.png">
+
+    <!-- all css here -->
+    <link rel="stylesheet" href="../../static/plugins/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/chosen.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/ionicons.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/meanmenu.min.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/bundle.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/assets/css/responsive.css">
+    <script src="../../static/plugins/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="../../static/js/axios.min.js"></script>
+</head>
+<body>
+
+
+<!-- Add your site or application content here -->
+
+<!--organicfood wrapper start-->
+<div class="organic_food_wrapper">
+    <!--Header start-->
+    <header class="header sticky-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="header_wrapper_inner">
+                        <div class="logo col-xs-12">
+                            <a href="user.html">
+                                <img src="../../static/img/logo.png" alt="" style="width: 3rem;">
+                                <label style="color: red;font-family: 华文行楷">舌尖上的中国</label>
+                            </a>
+                        </div>
+
+                        <div class="main_menu_inner">
+                            <div class="menu">
+                                <nav>
+                                    <ul>
+                                        <li><a href="user.html">主页</a></li>
+                                        <li><a href="about.html">关于我们</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                            <div class="mobile-menu d-lg-none">
+                                <nav>
+                                    <ul>
+                                        <li><a href="user.html">主页</a>
+                                        </li>
+                                        <li><a href="about.html">关于我们</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="header_right_info d-flex">
+                            <div class="mini__cart">
+                                <div class="mini_cart_inner">
+                                    <div class="cart_icon">
+                                        <a href="#">
+                                                <span class="cart_icon_inner">
+                                                    <i class="ion-android-cart"></i>
+                                                    <span class="cart_count">{{shoppingCart.totalNum}}</span>
+                                                </span>
+                                            <span class="item_total">￥{{shoppingCart.totalPrice}}</span>
+                                        </a>
+                                    </div>
+
+                                    <!--Mini Cart Box-->
+                                    <div class="mini_cart_box cart_box_one">
+                                        <div class="mini_cart_item" v-for="(car,index) in shoppingCart.cart">
+                                            <div class="mini_cart_img">
+                                                <a href="#">
+                                                    <img :src="car.dishesImg" alt="" width="100rem" height="50rem">
+                                                    <span class="cart_count">{{index+1}}</span>
+                                                </a>
+                                            </div>
+                                            <div class="cart_info">
+                                                <h5><a href="product-details.html">{{car.dishesName}}</a></h5>
+                                                <span class="cart_price">￥{{car.dishesPrice}}</span>
+                                            </div>
+                                            <div class="cart_remove">
+                                                <a href="javascript:void(0)" @click="deleteShopping(car.dishesId)"
+                                                   style="line-height: 3rem"><i class="zmdi zmdi-delete"></i></a>
+                                            </div>
+                                        </div>
+
+                                        <div class="price_content">
+                                            <div class="cart_subtotals">
+                                                <div class="price_inline">
+                                                    <span class="label">数量： </span>
+                                                    <span class="value">{{shoppingCart.totalNum}}</span>
+                                                </div>
+                                                <div class="price_inline">
+                                                    <span class="label">总计：</span>
+                                                    <span class="value">￥{{shoppingCart.totalPrice}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="min_cart_checkout">
+                                            <a href="javascript:void(0)" @click="openPay()">结算</a>
+                                        </div>
+                                    </div>
+                                    <!--Mini Cart Box End -->
+                                </div>
+                            </div>
+                            <div class="header_account">
+                                <div class="account_inner">
+                                    <a href="#"><i class="ion-gear-b"></i></a>
+                                </div>
+                                <div class="content-setting-dropdown">
+                                    <div class="language-selector-wrapper">
+                                        <div class="language-selector">
+                                            <ul>
+                                                <li><a href="#"><img src="../../static/plugins/assets/img/1.jpg"
+                                                                     alt="English"><span
+                                                        class="expand-more">English</span></a></li>
+                                                <li><a href="#"><img
+                                                        src="../../static/plugins/assets/img/banner/frances2.jpg"
+                                                        alt="Language"><span class="expand-more">Français</span>
+                                                </a></li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="currency-selector-wrapper">
+                                            <ul>
+                                                <li><a href="#">EUR $</a></li>
+                                                <li><a href="#">USD $</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="user_info_top">
+                                            <ul>
+                                                <li><a href="my-account.html">my account</a></li>
+                                                <li><a href="checkout.html">Checkout</a></li>
+                                                <li><a href="login.html">Sign in</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--Header end-->
+</div>
+<!--organicfood wrapper end-->
+
+<div class="breadcrumb_container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="index.html">Home ></a>
+                        </li>
+                        <li>About Us</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumb area end-->
+
+
+<!--about section area start-->
+<div class="about_section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1 col-md-12 text-center">
+                <div class="about_section_one">
+                    <h2 style="font-family: 华文行楷">舌尖上的中国</h2>
+                    <p>舌尖上的中国品牌创建于1994年，历经二十多年的发展，舌尖上的中国国际控股有限公司已经成长为国际知名的餐饮企业。
+                        截止2020年6月30日，舌尖上的中国在全球开设935家直营餐厅，其中868家位于中国大陆的164个城市，67家位于中国香港、中国澳门、中国台湾及海外，包括新加坡、韩国、日本、美国、加拿大、英国、越南、马来西亚、印度尼西亚及澳大利亚等地。
+                        舌尖上的中国多年来历经市场和顾客的检验，成功地打造出信誉度高，融汇各地饮食特色于一体的优质品牌。作为一个业务涉及全球的大型连锁餐饮企业，舌尖上的中国秉承诚信经营的理念，以提升食品质量的稳定性和安全性为前提条件， 为广大消费者提供更贴心的服务，更健康、更安全、更营养和更放心的食品。
+                    </p>
+                </div>
+                <div class="about__store__btn">
+                    <a href="javascript:void(0)">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--about section area end-->
+
+
+<!-- about area start-->
+<div class="about_chooseUs_area">
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <div class="video__wrape__area"
+                     style="background-image:url(../../static/plugins/assets/img/banner/about1.jpg)">
+                    <div class="video__inner">
+                        <a class="video__trigger" href="https://www.youtube.com/watch?v=cDDWvj_q-o8"><i
+                                class="zmdi zmdi-play"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <div class="about_choose_content">
+                    <h3>Why Choose Us?</h3>
+                    <div class="choose_content_inner">
+                        <div class="single_choose_us">
+                            <div class="choose_us mb-50">
+                                <div class="choose_icone">
+                                    <i class="zmdi zmdi-favorite-outline"></i>
+                                </div>
+                                <div class="choose_details">
+                                    <h4>Free Gift Box</h4>
+                                    <p>Lorem ipsum dolor sit amet consect adipisic elit sed do. </p>
+                                </div>
+                            </div>
+                            <div class="choose_us">
+                                <div class="choose_icone">
+                                    <i class="zmdi zmdi-truck"></i>
+                                </div>
+                                <div class="choose_details">
+                                    <h4>Free Delivery</h4>
+                                    <p>Lorem ipsum dolor sit amet consect adipisic elit sed do. </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single_choose_us">
+                            <div class="choose_us  mb-50">
+                                <div class="choose_icone">
+                                    <i class="zmdi zmdi-refresh-alt"></i>
+                                </div>
+                                <div class="choose_details">
+                                    <h4>Money Back</h4>
+                                    <p>Lorem ipsum dolor sit amet consect adipisic elit sed do. </p>
+                                </div>
+                            </div>
+                            <div class="choose_us">
+                                <div class="choose_icone"><i class="zmdi zmdi-time"></i></div>
+                                <div class="choose_details">
+                                    <h4>Support 24/7</h4>
+                                    <p>Lorem ipsum dolor sit amet consect adipisic elit sed do. </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- about area end -->
+
+
+<!--about team area start-->
+<div class="about_team_area ptb-90">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="about_section_title">
+                    <h2>我们的经营理念</h2>
+                    <p>对于一个餐饮品牌来说，学会了创新两个字，在什么时代都是可以发展得非常不错。创新生活则是一点点的核心价值观，懂得创新才能让这个品牌走得更远，创造新生活品质则是一点点的经营宗旨；经营二字虽然是对于一点点奶茶店铺的，但是其核心还是消费者，想要消费者能够有优质的生活品质。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--about team area end-->
+
+
+
+<div class="organic_food_wrapper">
+    <!--Brand logo start-->
+    <div class="brand_logo brand_about">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="brand_list_carousel owl-carousel">
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/1.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/2.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/3.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/4.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/5.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/1.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/2.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/3.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/4.png" alt="brand logo">
+                            </a>
+                        </div>
+                        <div class="single_brand_logo">
+                            <a href="#">
+                                <img src="assets/img/brand/5.png" alt="brand logo">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Brand logo end-->
+
+    <footer id="footer">
+        <br>
+        <div class="sub-logo">
+            <a href="user.html" >
+                <img src="../../static/img/logo2.png" alt="" style="width: 4rem;">
+                <label style="color: gray;font-family: 华文行楷">舌尖上的中国</label>
+            </a>
+            <hr style="width:100%;margin-right: -1rem;margin-top: 1rem;" />
+        </div>
+
+        <div class="inscribe">
+            <p class="company">
+                <a href="javascript:;">舌尖上的中国（北京）有限公司</a>
+                <a target="_blank" href="https://beian.miit.gov.cn" rel="noopener noreferrer">京ICP备12345678号</a>
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502047867"><img style="vertical-align: bottom;margin-right:5px;margin-left: 15px;" src="https://www.lkcoffee.com/template/images/common/icp.png">京公网安备123456789101112号</a>
+            </p>
+            <p></p>
+            <p class="version" style="font-size: 12px;">
+                电话：000_123456789 地址：重庆市巴南区龙洲湾尚文大道906号
+                <br> Copyright©2018 localhost:8080
+            </p>
+        </div>
+    </footer>
+    <!-- footer end -->
+</div>
+<!--organicfood wrapper end-->
+
+<link rel="stylesheet" href="../../static/css/user.css">
+</body>
+</html>

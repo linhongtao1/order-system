@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqcj.mapper.DishesMapper">
+  <resultMap id="BaseResultMap" type="com.cqcj.bean.Dishes">
+    <!--@mbg.generated-->
+    <!--@Table dishes-->
+    <id column="dishes_id" jdbcType="INTEGER" property="dishesId" />
+    <result column="dishes_name" jdbcType="VARCHAR" property="dishesName" />
+    <result column="dishes_descript" jdbcType="VARCHAR" property="dishesDescript" />
+    <result column="dishes_txt" jdbcType="VARCHAR" property="dishesTxt" />
+    <result column="recommend" jdbcType="INTEGER" property="recommend" />
+    <result column="dishes_price" jdbcType="FLOAT" property="dishesPrice" />
+    <result column="dishes_img" jdbcType="VARCHAR" property="dishesImg" />
+    <result column="dishes_datetime" jdbcType="DATE" property="dishesDatetime"/>
+    <result column="dishes_oper_time" jdbcType="DATE" property="dishesOperTime" />
+    <result column="dishes_count" jdbcType="INTEGER" property="dishesCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    dishes_id, dishes_name, dishes_descript, dishes_txt, recommend, dishes_price,dishes_img,dishes_datetime,dishes_oper_time,dishes_count
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from dishes
+    where dishes_id = #{dishesId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from dishes
+    where dishes_id = #{dishesId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="dishes_id" keyProperty="dishesId" parameterType="com.cqcj.bean.Dishes" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into dishes (dishes_name, dishes_descript, dishes_txt, recommend, dishes_price, dishes_img,dishes_datetime)
+    values (#{dishesName,jdbcType=VARCHAR}, #{dishesDescript,jdbcType=VARCHAR}, #{dishesTxt,jdbcType=VARCHAR}, 
+      #{recommend,jdbcType=INTEGER}, #{dishesPrice,jdbcType=FLOAT}, #{dishesImg,jdbcType=VARCHAR},#{dishesDatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="dishes_id" keyProperty="dishesId" parameterType="com.cqcj.bean.Dishes" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into dishes
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dishesName != null">
+        dishes_name,
+      </if>
+      <if test="dishesDescript != null">
+        dishes_descript,
+      </if>
+      <if test="dishesTxt != null">
+        dishes_txt,
+      </if>
+      <if test="recommend != null">
+        recommend,
+      </if>
+      <if test="dishesPrice != null">
+        dishes_price,
+      </if>
+      <if test="dishesImg != null">
+        dishes_img,
+      </if>
+      <if test="dishesDatetime != null">
+        dishes_datetime,
+      </if>
+      <if test="dishesOperTime != null">
+        dishes_oper_time,
+      </if>
+      <if test="dishesCount != null">
+        dishes_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dishesName != null">
+        #{dishesName,jdbcType=VARCHAR},
+      </if>
+      <if test="dishesDescript != null">
+        #{dishesDescript,jdbcType=VARCHAR},
+      </if>
+      <if test="dishesTxt != null">
+        #{dishesTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="recommend != null">
+        #{recommend,jdbcType=INTEGER},
+      </if>
+      <if test="dishesPrice != null">
+        #{dishesPrice,jdbcType=FLOAT},
+      </if>
+      <if test="dishesImg != null">
+        #{dishesImg,jdbcType=VARCHAR}
+      </if>
+      <if test="dishesDatetime != null">
+        #{dishesDatetime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="dishesOperTime != null">
+        #{dishesOperTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="dishesCount != null ">
+        #{dishesCount,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cqcj.bean.Dishes">
+    <!--@mbg.generated-->
+    update dishes
+    <set>
+      <if test="dishesName != null">
+        dishes_name = #{dishesName,jdbcType=VARCHAR},
+      </if>
+      <if test="dishesDescript != null">
+        dishes_descript = #{dishesDescript,jdbcType=VARCHAR},
+      </if>
+      <if test="dishesTxt != null">
+        dishes_txt = #{dishesTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="recommend != null">
+        recommend = #{recommend,jdbcType=INTEGER},
+      </if>
+      <if test="dishesPrice != null">
+        dishes_price = #{dishesPrice,jdbcType=FLOAT},
+      </if>
+      <if test="dishesImg != null">
+        dishes_img = #{dishesImg,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where dishes_id = #{dishesId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cqcj.bean.Dishes">
+    <!--@mbg.generated-->
+    update dishes
+    set dishes_name = #{dishesName,jdbcType=VARCHAR},
+      dishes_descript = #{dishesDescript,jdbcType=VARCHAR},
+      dishes_txt = #{dishesTxt,jdbcType=VARCHAR},
+      recommend = #{recommend,jdbcType=INTEGER},
+      dishes_price = #{dishesPrice,jdbcType=FLOAT},
+    dishes_img = #{dishesImg,jdbcType=VARCHAR}
+    where dishes_id = #{dishesId,jdbcType=INTEGER}
+  </update>
+  <select id="finAll" resultMap="BaseResultMap">
+    select * from dishes
+  </select>
+    <select id="selectRecommend" resultMap="BaseResultMap">
+      select * from dishes where recommend=1
+    </select>
+  <select id="selectByTime" resultMap="BaseResultMap">
+    select * from dishes order by dishes_datetime desc limit 4
+  </select>
+    <select id="findDishes" resultMap="BaseResultMap">
+      select * from dishes
+      <where>
+        <if test="param1 != null and param1 != ''">
+          dishes.dishes_name like concat('%',#{param1,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="param2 != null">
+          and recommend = #{param2}
+        </if>
+      </where>
+    </select>
+  <select id="findHot" resultMap="BaseResultMap">
+    select * from dishes order by dishes_count desc limit 5
+  </select>
+  <select id="findCold" resultMap="BaseResultMap">
+    select * from dishes order by dishes_oper_time asc limit 5
+  </select>
+    <update id="addDishesCountById">
+      update dishes set dishes_count = dishes_count + 1,dishes_oper_time = #{param2,jdbcType=TIMESTAMP} where dishes_id = #{param1,jdbcType=INTEGER}
+    </update>
+</mapper>

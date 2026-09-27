@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>舌尖上的中国</title>
+    <link rel="shortcut icon" href="../../static/img/logo.png">
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <script src="../../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../../static/js/axios.min.js"></script>
+    <link rel="stylesheet" href="../../static/css/userManager.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body style="background:rgb(247,249,250)">
+<div id="app">
+    <table class="table table-striped table-bordered table-hover">
+        <h3>用户信息表</h3>
+        <a href="#" @click="selectUserById()" class="btn-lg btn-success" style="position: absolute; left: 1%;top: 3%;">添加用户</a>
+            <div class="row" style="float: left; margin-left: 20rem;font-size:2rem">
+                <p style="display: inline-block;margin-left: -5rem">姓名：<input id="queryUserName" type="text"  name="queryUserName" class="form-control" style="width: 20rem;text-align: center;display: inline-block;margin-right: 1rem;"></p>
+                用户名：<input id="queryUserAccount" type="text"  name="queryUserAccount" class="form-control" style="width: 20rem;text-align: center;display: inline-block;margin-right: 4rem;">
+                角色：
+                <select name="queryRole" id="queryRole" class="form-control" style="width: 15rem;text-align: center;display: inline-block;margin-right: 4rem;">
+                    <option value="">请选择</option>
+                    <option value="1">管理员</option>
+                    <option value="2">服务员</option>
+                    <option value="3">普通用户</option>
+                </select>
+                <input type="submit" value="查询" name="querySubmit" class="btn btn-lg btn-success" style="margin-right: 2rem;" @click="query()">
+                <input type="reset" value="重置" name="queryReset" class="btn btn-lg btn-primary"  @click="reset()">
+            </div>
+        <br><br><br>
+        <thead>
+        <tr>
+            <th class="text-center">编号</th>
+            <th class="text-center">姓名</th>
+            <th class="text-center">账号</th>
+            <th class="text-center">密码</th>
+            <th class="text-center">角色</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(user,index) in list" class="text-center">
+            <td>{{index+1}}</td>
+            <td>{{user.userName}}</td>
+            <td>{{user.userAccount}}</td>
+            <td>{{user.userPassword}}</td>
+            <td v-if="user.role=='1'">管理员</td>
+            <td v-if="user.role=='2'">服务员</td>
+            <td v-if="user.role=='3'">普通用户</td>
+            <td>
+                <button class="btn btn-sm btn-danger" @click="myconfirm(user.userId)">删除</button>
+                <button class="btn btn-sm btn-warning" @click="selectUserById(user.userId)">修改</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="modal" class="c2 hide" style="border-radius: 2rem">
+        <h3 style="text-align: center;margin-top: 3rem;" id="title"></h3>
+        <div id="updateOrAdd" style="margin-left: 8rem;">
+            <input type="text" id="userId" name="userId" class="hide"/>
+            <label for="userAccount" class="control-label">账号</label><input type="text" id="userAccount"
+                                                                            name="userAccount" class="form-control"
+                                                                            style="width: 25rem;"/>
+            <br><label for="userName" class="control-label">姓名</label><input type="text" id="userName"
+                                                                                 name="userName"
+                                                                                 class="form-control"
+                                                                                 style="width: 25rem;"/><br>
+            <br><label for="userPassword" class="control-label">密码</label><input type="password" id="userPassword"
+                                                                                 name="userPassword"
+                                                                                 class="form-control"
+                                                                                 style="width: 25rem;"/><br>
+            <label for="role" class="control-label">角色 </label>
+            <select id="role" name="role" v-model="userInfo.role" class="form-control"
+                    style="width: 15rem;text-align: center">
+                <option value="1">管理员</option>
+                <option value="2">服务员</option>
+                <option value="3">普通用户</option>
+            </select>
+            <br><br>
+        </div>
+        <p style="margin-left: 15rem;">
+            <input type="button" class="btn btn-sm btn-success" value="确定" @click="saveOrUpdate();">
+            <input type="button" class="btn btn-sm" value="取消" @click="hide();">
+        </p>
+    </div>
+</div>
+
+</body>
+<script src="../../static/js/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                list: [],
+                userInfo: {
+                    userId: "",
+                    userName:"",
+                    userAccount: "",
+                    userPassword: "",
+                    role: "",
+                    faceImg: ""
+                },
+                queryInfo: {
+                    userId: "",
+                    userName:"",
+                    userAccount: "",
+                    userPassword: "",
+                    role: "",
+                    faceImg: ""
+                }
+            }
+        },
+        created() {
+            this.loadUserInfo()
+        },
+        methods: {
+            reset(){
+                document.getElementById("queryUserAccount").value = ""
+                document.getElementById("queryRole").value = ""
+                document.getElementById("queryUserName").value = ""
+            },
+            query(){
+                app.queryInfo.userAccount = document.getElementById("queryUserAccount").value
+                app.queryInfo.role = document.getElementById("queryRole").value
+                app.queryInfo.userName = document.getElementById("queryUserName").value
+                axios({
+                    method: 'post',
+                    url: '/userInfo/find',
+                    data:app.queryInfo
+                }).then(function (res){
+                    console.log(res)
+                    app.list = res.data.userInfoList
+                })
+            },
+            saveOrUpdate() {
+                if (!app.userInfo.userId) { //空
+                    app.addUser()
+                } else {
+                    app.updateById()
+                }
+            },
+            addUser() {
+                app.userInfo.userName = document.getElementById("userName").value
+                app.userInfo.userAccount = document.getElementById("userAccount").value
+                app.userInfo.userPassword = document.getElementById("userPassword").value
+                app.userInfo.role = document.getElementById("role").value
+                axios({
+                    method: 'post',
+                    url: '/userInfo',
+                    data: app.userInfo
+                }).then(function (res) {
+                    app.loadUserInfo()
+                    app.hide()
+                })
+            },
+            myconfirm(id) {
+                if (confirm('确定要删除该用户吗？') == true) {
+                    this.deleteById(id)
+                }
+            },
+            loadUserInfo() {
+                axios({
+                    method: 'get',
+                    url: '/userInfo'
+                }).then(function (res) {
+                    app.list = res.data.userInfoList
+                })
+            },
+            deleteById(id) {
+                axios({
+                    method: 'delete',
+                    url: '/userInfo/' + id
+                }).then(function (res) {
+                    app.loadUserInfo()
+                });
+            },
+            updateById() {
+                app.userInfo.userId = document.getElementById("userId").value
+                app.userInfo.userAccount = document.getElementById("userAccount").value
+                app.userInfo.userPassword = document.getElementById("userPassword").value
+                app.userInfo.role = document.getElementById("role").value
+                app.hide()
+                axios({
+                    method: 'put',
+                    url: '/userInfo',
+                    data: app.userInfo,
+                }).then(function (res) {
+                    app.loadUserInfo()
+                });
+            },
+            selectUserById(id) {
+                if (id) {
+                    document.getElementById("title").innerHTML = "修改用户信息"
+                    axios({
+                        method: 'get',
+                        url: '/userInfo/' + id
+                    }).then(function (res) {
+                        app.userInfo = res.data.userInfo
+                        console.log(app.userInfo)
+                        document.getElementById("userId").value = app.userInfo.userId;
+                        document.getElementById("userAccount").value = app.userInfo.userAccount;
+                        document.getElementById("userPassword").value = app.userInfo.userPassword;
+                        document.getElementById('modal').classList.remove('hide');
+                    });
+                } else {
+                    document.getElementById("title").innerHTML = "增添新用户"
+                    document.getElementById("userId").value = ""
+                    document.getElementById("userAccount").value = ""
+                    document.getElementById("userPassword").value = ""
+                    document.getElementById("role").value = ""
+                    document.getElementById('modal').classList.remove('hide');
+                }
+            },
+            hide() {
+                document.getElementById('modal').classList.add('hide');
+            }
+        }
+    });
+</script>
+</html>

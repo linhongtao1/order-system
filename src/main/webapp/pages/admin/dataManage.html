@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舌尖上的中国</title>
+    <link rel="shortcut icon" href="../../static/img/logo.png">
+    <link href="../../static/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background:rgb(247,249,250)">
+<div class="page-title">
+    <h3 class="breadcrumb-header">数据中心</h3>
+</div>
+<br>
+<div id="app">
+    <div id="main-wrapper"> <!--图表-->
+        <div class="row">
+            <div class="col-lg-6" style="text-align: center;">
+                <div class="panel panel-white" style="height: 8rem;">
+                    <div style="margin-top: 2rem">
+                        <a href="javascript:void(0)" style="text-decoration: none">
+                            <h4 class="list-group-item-heading">本月销售额</h4>
+                        </a>
+                        <a href="javascript:void(0)" style="text-decoration: none">
+                            <h4 class="list-group-item-heading">{{monthMoney}}</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" style="text-align: center;height: 8rem;">
+                <div class="panel panel-white" style="height: 8rem;">
+                    <div style="margin-top: 2rem;">
+                        <a href="javascript:void(0)" style="text-decoration: none">
+                            <h4 class="list-group-item-heading">今日销售额</h4>
+                        </a>
+                        <a href="javascript:void(0)" style="text-decoration: none">
+                            <h4 class="list-group-item-heading">{{dayMoney}}</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--热门开始-->
+        <div class="row">
+            <div class="col-lg-6 col-md-6 list-group">
+                <div class="panel-heading clearfix">
+                    <a href="javascript:void(0)" class="list-group-item active">
+                        <h4 class="list-group-item-heading">热门菜品</h4>
+                    </a>
+                    <a href="javascript:void(0)" class="list-group-item" v-for="(dishes,index) in hotList">
+                        <span class="list-group-item-heading" style="font-size: 2rem;color: red;margin-left: 1.5rem;">{{index+1}}</span>
+                        <span class="list-group-item-heading" style="margin-left: 3rem;font-size: 1.5rem">{{dishes.dishesName}}</span>
+                        <span class="list-group-item-heading" style="position: absolute;right: 10rem;font-size: 2rem;">{{dishes.dishesCount}}</span>
+                    </a>
+                </div>
+            </div>
+            <!--热门结束-->
+
+            <!--冷门开始-->
+            <div class="col-lg-6 col-md-6 list-group">
+                <div class="panel-heading clearfix">
+                    <a href="javascript:void(0)" class="list-group-item active">
+                        <h4 class="list-group-item-heading">近期冷门</h4>
+                    </a>
+                    <a href="javascript:void(0)" class="list-group-item" v-for="(dishes,index) in coldList">
+                        <span class="list-group-item-heading"
+                              style="font-size: 2rem;color: lightgreen;margin-left: 1.5rem;">{{index+1}}</span>
+                        <span class="list-group-item-heading" style="margin-left: 3rem;font-size: 1.5rem">{{dishes.dishesName}}</span>
+                        <span class="list-group-item-heading" style="position: absolute;right: 10rem;font-size: 2rem;">{{dishes.dishesOperTime}}</span>
+                    </a>
+                </div>
+            </div>
+            <!--冷门结束-->
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-6 col-md-5 list-group panel panel-white panel-heading clearfix"
+                 style="text-align: center">
+                <h4>本月员工销售情况饼图</h4>
+                <div class="panel-heading clearfix" id="pie"
+                     style="height: 50rem;width: 50rem;position: relative;left:7rem">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 list-group panel panel-white panel-heading clearfix"
+                 style="text-align: center;position: relative;left: 1rem;">
+                <h4>此季度销售分析图</h4>
+                <div class="panel-heading clearfix" id="barAndLine"
+                     style="height: 50rem;width: 50rem;position: relative;left:7rem">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+<script src="../../static/js/jquery-3.6.0.min.js"></script>
+<script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../static/js/vue.js"></script>
+<script src="../../static/js/axios.min.js"></script>
+<script src="../../static/js/echarts.min.js"></script>
+<script>
+
+</script>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                monthMoney: "",
+                dayMoney: "",
+                hotList: [],
+                coldList: [],
+                hotData: {
+                    dishesName: "",
+                    dishesPrice: "",
+                    dishesCount: ""
+                },
+                pieData: []
+            }
+        },
+        created() {
+            this.loadHot()
+            this.loadCold()
+            this.loadDayMoney()
+            this.loadMonthMoney()
+        },
+        mounted() {
+            this.loadPie()
+            this.loadBarAndLine()
+        },
+        methods: {
+            loadBarAndLine() {
+                axios({
+                    method: 'get',
+                    url: '/Data/BarAndLine'
+                }).then(function (res) {
+                    let myChart = echarts.init(document.getElementById('barAndLine'));
+                    let option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                crossStyle: {
+                                    color: '#999'
+                                }
+                            }
+                        },
+                        legend: {
+                            data: ['销售金额', '趋势']
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: ['上上个月','上个月','当前月'],
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                name: '销售金额',
+                                min: -5000,
+                                max: 5000,
+                                interval: 2000,
+                                axisLabel: {
+                                    formatter: '￥{value} '
+                                }
+                            },
+                            {
+                                type: 'value',
+                                name: '趋势',
+                                min: -5000,
+                                max: 5000,
+                                interval: 2000,
+                                axisLabel: {
+                                    formatter: ''
+                                }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '销售金额',
+                                type: 'bar',
+                                tooltip: {
+                                    valueFormatter: function (value) {
+                                        return ' ￥' + value;
+                                    }
+                                },
+                                data: res.data.barList
+                            },
+                            {
+                                name: '趋势',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                tooltip: {
+                                    valueFormatter: function (value) {
+                                        return ' ￥' + value;
+                                    }
+                                },
+                                data: res.data.lineList
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                    window.addEventListener("resize", function () {
+                        myChart.resize();
+                    });
+                })
+
+            },
+            loadPie() {
+                axios({
+                    method: 'get',
+                    url: '/Data/Pie',
+                }).then(function (res) {
+                    let myChart = echarts.init(document.getElementById('pie'));
+                    let option = {
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        series: [
+                            {
+                                name: 'Access From',
+                                type: 'pie',
+                                radius: ['40%', '70%'],
+                                avoidLabelOverlap: false,
+                                itemStyle: {
+                                    borderRadius: 10,
+                                    borderColor: '#fff',
+                                    borderWidth: 2
+                                },
+                                label: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    label: {
+                                        show: true,
+                                        fontSize: '40',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                labelLine: {
+                                    show: false
+                                },
+                                data: res.data.data
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                    window.addEventListener("resize", function () {
+                        myChart.resize();
+                    });
+                })
+            },
+            loadMonthMoney() {
+                axios({
+                    method: 'get',
+                    url: '/Data/MonthMoney',
+                }).then(function (res) {
+                    app.monthMoney = res.data.monthMoney
+                })
+            },
+            loadDayMoney() {
+                axios({
+                    method: 'get',
+                    url: '/Data/DayMoney',
+                }).then(function (res) {
+                    app.dayMoney = res.data.dayMoney
+                })
+            },
+            loadHot() {
+                axios({
+                    method: 'get',
+                    url: '/Data/Hot',
+                }).then(function (res) {
+                    app.hotList = res.data.dishesList
+                })
+            },
+            loadCold() {
+                axios({
+                    method: 'get',
+                    url: '/Data/Cold',
+                }).then(function (res) {
+                    app.coldList = res.data.dishesList
+                })
+            },
+        }
+    });
+</script>
+</html>

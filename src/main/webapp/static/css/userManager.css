@@ -1,0 +1,17 @@
+.c2{
+    background-color: rgb(255,255,255,0.95);
+    position: fixed;
+    width: 400px;
+    height: 500px;
+    top:10%;
+    left: 50%;
+    z-index: 3;
+    margin-top: -150px;
+    margin-left: -200px;
+}
+.hide{
+    display: none;
+}
+#modal p {
+    margin-left:80px;
+}
